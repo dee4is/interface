@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sinterface/pages/home.dart';
+import 'package:sinterface/pages/home/home.dart';
 
 import 'colors.dart';
 
@@ -14,6 +14,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: HomePage(),
+      scrollBehavior: const MaterialScrollBehavior().copyWith(scrollbars: true),
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         primaryColor: primaryColor,
