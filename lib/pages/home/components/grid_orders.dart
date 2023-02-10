@@ -1,7 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:sinterface/controllers/orders.dart';
 import 'package:sinterface/pages/home/components/list_orders.dart';
+import 'package:sinterface/pages/order/order.dart';
+
+final getIt = GetIt.instance;
 
 class GridOrders extends StatefulWidget {
   const GridOrders({super.key});
@@ -17,16 +22,15 @@ class _GridOrdersState extends State<GridOrders> {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final cardsAmount = (size.width / 300.0).round();
-    /*24 is for notification bar on Android*/
-    final double itemHeight = (305 - kToolbarHeight - 24) / 2;
-    final double itemWidth = 300 / 2;
-    final _controller = ScrollController();
+    final controller = getIt<OrdersController>();
+    final scrollController = ScrollController();
     return Scrollbar(
-      controller: _controller,
+      controller: scrollController,
       child: GridView.builder(
-        controller: _controller,
+        controller: scrollController,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: cardsAmount, mainAxisExtent: 305),
+        itemCount: controller.list.length,
         itemBuilder: (context, index) => SizedBox(
             width: 300,
             height: 305,
@@ -38,49 +42,54 @@ class _GridOrdersState extends State<GridOrders> {
                 margin: const EdgeInsets.all(10.0),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
-                  onTap: () {},
+                  onTap: () {
+                    controller.setCurrentOrder(index);
+                    Navigator.of(context).pushNamed(OrderPage.route);
+                  },
                   child: Wrap(
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            height: 200.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.0),
-                              image: DecorationImage(
-                                  image: NetworkImage(
-                                      "http://source.unsplash.com/random"),
-                                  fit: BoxFit.cover),
+                          Stack(children: [
+                            Hero(
+                              tag: controller.list[index].title,
+                              child: Container(
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            controller.list[index].picture),
+                                        fit: BoxFit.cover),
+                                  )),
                             ),
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Positioned(
-                                  child: StatusWidget(),
-                                  top: 10,
-                                  right: 10,
-                                ),
-                                Positioned(
-                                    left: 15,
-                                    top: 15,
-                                    child: Text(
-                                      index.toString(),
-                                      style: theme.textTheme.titleLarge,
-                                    )),
-                                Positioned(
-                                    left: 15,
-                                    bottom: 15,
-                                    child: Text(
-                                      "Olexander Cuzenko",
-                                      style: theme.textTheme.titleMedium
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ))
-                              ],
+                            Positioned(
+                              child: StatusWidget(),
+                              top: 10,
+                              right: 10,
                             ),
-                          ),
+                            Positioned(
+                                left: 15,
+                                top: 15,
+                                child: Text(
+                                  index.toString(),
+                                  style: theme.textTheme.titleLarge,
+                                )),
+                            Positioned(
+                                left: 15,
+                                bottom: 15,
+                                child: Text(
+                                  "Olexander Cuzenko",
+                                  style: theme.textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                )),
+                            Positioned(
+                                right: 15,
+                                bottom: 15,
+                                child: Text("1267.84 UAH"))
+                          ]),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Wrap(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:sinterface/controllers/orders.dart';
 import 'package:sinterface/pages/home/home.dart';
+import 'package:sinterface/pages/order/order.dart';
 
 import 'colors.dart';
 
 void main() {
+  GetIt.I.registerSingleton(OrdersController());
   runApp(const App());
 }
 
@@ -27,6 +31,10 @@ class App extends StatelessWidget {
           ),
         ),
       ),
+      routes: {
+        HomePage.route: (context) => HomePage(),
+        OrderPage.route: (context) => OrderPage()
+      },
     );
   }
 }

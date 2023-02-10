@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
   HomePage({
     super.key,
   });
+  static const route = "/home";
 
   final _controller = SidebarXController(selectedIndex: 0);
 
@@ -118,7 +119,7 @@ class _ScreensExample extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: false ? ListOrders() : GridOrders(),
+                    child: true ? ListOrders() : GridOrders(),
                   )
                 ],
               ),
