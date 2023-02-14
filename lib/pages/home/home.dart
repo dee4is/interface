@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:sinterface/pages/home/components/grid_orders.dart';
 
@@ -79,9 +80,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
           Expanded(
-            child: Center(
-              child: _ScreensExample(controller: _controller),
-            ),
+            child: _ScreensExample(controller: _controller),
           ),
         ],
       ),
@@ -89,7 +88,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _ScreensExample extends StatelessWidget {
+class _ScreensExample extends StatefulWidget {
   const _ScreensExample({
     Key? key,
     required this.controller,
@@ -98,58 +97,75 @@ class _ScreensExample extends StatelessWidget {
   final SidebarXController controller;
 
   @override
+  State<_ScreensExample> createState() => _ScreensExampleState();
+}
+
+class _ScreensExampleState extends State<_ScreensExample> {
+  bool isSearchOpen = false;
+  @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, child) {
-        switch (controller.selectedIndex) {
-          case 0:
-            return Container(
-              padding: const EdgeInsets.only(top: 10),
-              margin: const EdgeInsets.only(right: 10),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 80,
-                    child: Center(
-                      child: TextField(
-                        decoration:
-                            InputDecoration(border: OutlineInputBorder()),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: true ? ListOrders() : GridOrders(),
-                  )
-                ],
-              ),
-            );
-          case 1:
-            return Text(
-              'Search',
-            );
-          case 2:
-            return Text(
-              'People',
-            );
-          case 3:
-            return Text(
-              'Favorites',
-            );
-          case 4:
-            return Text(
-              'Profile',
-            );
-          case 5:
-            return Text(
-              'Settings',
-            );
-          default:
-            return Text(
-              'Not found page',
-            );
-        }
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.keyF,
+                control: true, includeRepeats: false):
+            () => setState(() => isSearchOpen = !isSearchOpen)
       },
+      child: Focus(
+        autofocus: true,
+        child: AnimatedBuilder(
+          animation: widget.controller,
+          builder: (context, child) {
+            switch (widget.controller.selectedIndex) {
+              case 0:
+                return Container(
+                  padding: const EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(right: 10),
+                  child: Column(
+                    children: [
+                      if (isSearchOpen)
+                        const SizedBox(
+                          height: 80,
+                          child: Center(
+                            child: TextField(
+                              decoration:
+                                  InputDecoration(border: OutlineInputBorder()),
+                            ),
+                          ),
+                        ),
+                      const Expanded(
+                        child: true ? ListOrders() : GridOrders(),
+                      )
+                    ],
+                  ),
+                );
+              case 1:
+                return Text(
+                  'Search',
+                );
+              case 2:
+                return Text(
+                  'People',
+                );
+              case 3:
+                return Text(
+                  'Favorites',
+                );
+              case 4:
+                return Text(
+                  'Profile',
+                );
+              case 5:
+                return Text(
+                  'Settings',
+                );
+              default:
+                return Text(
+                  'Not found page',
+                );
+            }
+          },
+        ),
+      ),
     );
   }
 }
