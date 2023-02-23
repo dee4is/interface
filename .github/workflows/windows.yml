@@ -5,9 +5,19 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Flutter setup
+        uses: subosito/flutter-action@v2
         with:
-          channel: "beta"
-      - run: flutter config --enable-windows-desktop
-      - run: flutter build windows
+          channel: 'stable'
+          cache: true
+          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+          cache-path: ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch: # optional, change this to specify the cache path
+      - name: Build
+        run: flutter config --enable-windows-desktop && flutter build windows
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/windows
