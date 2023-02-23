@@ -14,7 +14,8 @@ jobs:
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
           cache-path: ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch # optional, change this to specify the cache path
-          run: flutter config --enable-windows-desktop && flutter build windows
+          run: flutter config --enable-windows-desktop
+          run: flutter build windows
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
